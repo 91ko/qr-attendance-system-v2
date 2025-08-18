@@ -4,7 +4,6 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 
 const handler = NextAuth({
-  adapter: PrismaAdapter(prisma),
   providers: [
     KakaoProvider({
       clientId: process.env.KAKAO_CLIENT_ID!,
