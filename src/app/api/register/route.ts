@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
         email: null,
         contact: contact,
         image: image,
-      } as any
+      } as any // eslint-disable-line @typescript-eslint/no-explicit-any
     })
 
     console.log('사용자 생성 성공:', user)
