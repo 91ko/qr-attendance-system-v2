@@ -33,7 +33,13 @@ export default function HomePage() {
         })
 
         const data = await response.json()
+        console.log('등록 상태 확인 결과:', data)
         setIsRegistered(data.isRegistered)
+        
+        // 이미 등록된 사용자는 모달을 표시하지 않음
+        if (data.isRegistered) {
+          setShowRegistrationModal(false)
+        }
       } catch (error) {
         console.error('사용자 등록 확인 오류:', error)
       } finally {
@@ -49,6 +55,9 @@ export default function HomePage() {
     if (!isChecking && session?.user && !isRegistered) {
       console.log('사용자 등록되지 않음, 등록 모달 표시:', session.user.name)
       setShowRegistrationModal(true)
+    } else if (!isChecking && session?.user && isRegistered) {
+      console.log('이미 등록된 사용자, 출퇴근 화면 표시:', session.user.name)
+      setShowRegistrationModal(false)
     }
   }, [isChecking, session, isRegistered])
 
