@@ -3,7 +3,7 @@ import KakaoProvider from "next-auth/providers/kakao"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 
-export const authOptions = {
+const handler = NextAuth({
   providers: [
     KakaoProvider({
       clientId: process.env.KAKAO_CLIENT_ID!,
@@ -54,8 +54,6 @@ export const authOptions = {
   },
   secret: process.env.AUTH_SECRET,
   debug: true,
-}
-
-const handler = NextAuth(authOptions)
+})
 
 export { handler as GET, handler as POST }

@@ -41,8 +41,7 @@ export async function POST(request: NextRequest) {
       message: '사용자 등록이 완료되었습니다.',
       user: {
         id: user.id,
-        name: user.name,
-        contact: user.contact || null
+        name: user.name
       }
     })
 
