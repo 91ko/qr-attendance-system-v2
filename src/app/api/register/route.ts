@@ -1,18 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession()
-    
-    if (!session?.user) {
-      return NextResponse.json(
-        { success: false, message: '로그인이 필요합니다.' },
-        { status: 401 }
-      )
-    }
-
     const { name, contact, image } = await request.json()
 
     if (!name || !contact) {
@@ -52,7 +42,7 @@ export async function POST(request: NextRequest) {
       user: {
         id: user.id,
         name: user.name,
-        contact: user.contact
+        contact: user.contact || null
       }
     })
 
