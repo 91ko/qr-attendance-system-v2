@@ -13,12 +13,14 @@ interface Attendance {
   user: {
     name: string
     image: string
+    contact?: string
   }
 }
 
 interface UserAttendance {
   name: string
   image: string
+  contact?: string
   date: string
   inTime?: string
   outTime?: string
@@ -93,6 +95,7 @@ export default function AdminPage() {
         userMap.set(key, {
           name: attendance.user.name,
           image: attendance.user.image,
+          contact: attendance.user.contact,
           date: attendanceDate
         })
       }
@@ -355,7 +358,10 @@ export default function AdminPage() {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="시작일 선택"
+                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    startDate ? 'text-gray-900' : 'text-gray-500'
+                  }`}
                 />
               </div>
               <div>
@@ -366,7 +372,10 @@ export default function AdminPage() {
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="종료일 선택"
+                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    endDate ? 'text-gray-900' : 'text-gray-500'
+                  }`}
                 />
               </div>
               <div className="flex items-end">
@@ -426,6 +435,9 @@ export default function AdminPage() {
                     직원명
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    연락처
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     날짜
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -469,6 +481,9 @@ export default function AdminPage() {
                           {user.name}
                         </span>
                       </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {user.contact || '-'}
                     </td>
                                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
                                {user.date}

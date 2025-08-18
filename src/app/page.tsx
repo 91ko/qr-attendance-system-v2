@@ -98,21 +98,32 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              {!isRegistered ? (
+                <div className="text-center">
+                  <p className="text-gray-600 mb-4">출퇴근을 위해 먼저 등록해주세요</p>
                   <Link
-                    href="/scan?site=HQ&type=in"
-                    className="bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors text-center font-medium"
+                    href="/register"
+                    className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors inline-block font-medium"
                   >
-                    출근
-                  </Link>
-                  <Link
-                    href="/scan?site=HQ&type=out"
-                    className="bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-colors text-center font-medium"
-                  >
-                    퇴근
+                    사용자 등록
                   </Link>
                 </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <Link
+                      href="/scan?site=HQ&type=in"
+                      className="bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors text-center font-medium"
+                    >
+                      출근
+                    </Link>
+                    <Link
+                      href="/scan?site=HQ&type=out"
+                      className="bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-colors text-center font-medium"
+                    >
+                      퇴근
+                    </Link>
+                  </div>
                 
                 {/* 관리자 링크 - 특정 사용자만 표시 */}
                 {session.user.name === '관리자' && (
@@ -126,6 +137,7 @@ export default function HomePage() {
                   </div>
                 )}
               </div>
+              )}
             </div>
           ) : (
             <div className="text-center">
