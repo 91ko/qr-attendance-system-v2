@@ -30,7 +30,12 @@ const handler = NextAuth({
         token.sub = user.id
         token.name = user.name
         token.email = user.email
-        token.image = user.image
+        // Force HTTPS for Kakao profile images
+        if (user.image && user.image.startsWith('http://')) {
+          token.image = user.image.replace('http://', 'https://')
+        } else {
+          token.image = user.image
+        }
       }
       return token
     },

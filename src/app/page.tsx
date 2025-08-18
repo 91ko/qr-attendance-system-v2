@@ -3,13 +3,14 @@
 import { useSession, signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
 export default function HomePage() {
   const { data: session, status } = useSession()
-  const router = useRouter()
   const [isChecking, setIsChecking] = useState(true)
   const [isRegistered, setIsRegistered] = useState(false)
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false)
+  const [contact, setContact] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     const checkUserRegistration = async () => {
@@ -43,13 +44,51 @@ export default function HomePage() {
     checkUserRegistration()
   }, [session, status])
 
-  // 등록되지 않은 사용자는 등록 페이지로 리다이렉트
+  // 등록되지 않은 사용자는 등록 모달 표시
   useEffect(() => {
     if (!isChecking && session?.user && !isRegistered) {
-      console.log('사용자 등록되지 않음, 등록 페이지로 이동:', session.user.name)
-      router.push('/register')
+      console.log('사용자 등록되지 않음, 등록 모달 표시:', session.user.name)
+      setShowRegistrationModal(true)
     }
-  }, [isChecking, session, isRegistered, router])
+  }, [isChecking, session, isRegistered])
+
+  const handleRegistration = async () => {
+    if (!contact.trim()) {
+      alert('연락처를 입력해주세요.')
+      return
+    }
+
+    setIsSubmitting(true)
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: session?.user?.name,
+          email: null,
+          contact: contact.trim(),
+          image: session?.user?.image,
+        }),
+      })
+
+      if (response.ok) {
+        setIsRegistered(true)
+        setShowRegistrationModal(false)
+        setContact('')
+        alert('등록이 완료되었습니다!')
+      } else {
+        const error = await response.json()
+        alert(error.message || '등록에 실패했습니다.')
+      }
+    } catch (error) {
+      console.error('등록 오류:', error)
+      alert('등록 중 오류가 발생했습니다.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   if (status === 'loading' || isChecking) {
     return (
@@ -99,17 +138,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {!isRegistered ? (
-                <div className="text-center">
-                  <p className="text-gray-600 mb-4">출퇴근을 위해 먼저 등록해주세요</p>
-                  <Link
-                    href="/register"
-                    className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors inline-block font-medium"
-                  >
-                    사용자 등록
-                  </Link>
-                </div>
-              ) : (
+              {isRegistered && (
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <Link
@@ -153,6 +182,70 @@ export default function HomePage() {
           )}
         </div>
       </div>
+
+      {/* 등록 모달 */}
+      {showRegistrationModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">사용자 등록</h2>
+              <p className="text-gray-600">출퇴근을 위해 연락처를 입력해주세요</p>
+            </div>
+
+            <div className="mb-6">
+              <div className="flex items-center space-x-3 mb-4">
+                {session?.user?.image && (
+                  <img
+                    src={session.user.image}
+                    alt="프로필"
+                    className="w-12 h-12 rounded-full"
+                  />
+                )}
+                <div>
+                  <p className="font-medium text-gray-900">{session?.user?.name}</p>
+                  <p className="text-sm text-gray-600">카카오 계정</p>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="contact" className="block text-sm font-medium text-gray-700 mb-2">
+                  연락처 *
+                </label>
+                <input
+                  type="tel"
+                  id="contact"
+                  value={contact}
+                  onChange={(e) => setContact(e.target.value)}
+                  placeholder="010-1234-5678"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={isSubmitting}
+                />
+              </div>
+            </div>
+
+            <div className="flex space-x-3">
+              <button
+                onClick={() => {
+                  setShowRegistrationModal(false)
+                  setContact('')
+                  signOut({ callbackUrl: '/' })
+                }}
+                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                disabled={isSubmitting}
+              >
+                취소
+              </button>
+              <button
+                onClick={handleRegistration}
+                disabled={isSubmitting || !contact.trim()}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? '등록 중...' : '등록'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
