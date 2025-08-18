@@ -1,0 +1,17 @@
+{
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "NEXTAUTH_URL": "@nextauth_url",
+    "AUTH_SECRET": "@auth_secret",
+    "KAKAO_CLIENT_ID": "@kakao_client_id",
+    "KAKAO_CLIENT_SECRET": "@kakao_client_secret",
+    "DATABASE_URL": "@database_url"
+  }
+}
