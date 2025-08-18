@@ -38,6 +38,7 @@ export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
+  const [version, setVersion] = useState(1) // 강제 새로고침용
   const [editModal, setEditModal] = useState<{
     isOpen: boolean
     user: UserAttendance | null

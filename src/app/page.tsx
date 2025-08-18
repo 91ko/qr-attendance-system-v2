@@ -46,6 +46,7 @@ export default function HomePage() {
   // 등록되지 않은 사용자는 등록 페이지로 리다이렉트
   useEffect(() => {
     if (!isChecking && session?.user && !isRegistered) {
+      console.log('사용자 등록되지 않음, 등록 페이지로 이동:', session.user.name)
       router.push('/register')
     }
   }, [isChecking, session, isRegistered, router])

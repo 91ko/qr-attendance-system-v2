@@ -86,6 +86,7 @@ export async function processAttendance(
       const allUsers = await prisma.user.findMany()
       console.log("All users in DB:", allUsers)
       console.log("Looking for user with name:", session.user.name)
+      console.log("Session user:", session.user)
       
       return {
         success: false,
