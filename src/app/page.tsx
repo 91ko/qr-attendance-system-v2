@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -75,18 +75,26 @@ export default function HomePage() {
           {session?.user ? (
             <div className="space-y-4">
               <div className="bg-blue-50 p-4 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  {session.user.image && (
-                    <img
-                      src={session.user.image}
-                      alt="프로필"
-                      className="w-12 h-12 rounded-full"
-                    />
-                  )}
-                  <div>
-                    <p className="font-medium text-gray-900">{session.user.name}</p>
-                    <p className="text-sm text-gray-600">카카오 계정</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    {session.user.image && (
+                      <img
+                        src={session.user.image}
+                        alt="프로필"
+                        className="w-12 h-12 rounded-full"
+                      />
+                    )}
+                    <div>
+                      <p className="font-medium text-gray-900">{session.user.name}</p>
+                      <p className="text-sm text-gray-600">카카오 계정</p>
+                    </div>
                   </div>
+                  <button
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className="text-gray-500 hover:text-gray-700 text-sm px-2 py-1 rounded hover:bg-gray-100"
+                  >
+                    로그아웃
+                  </button>
                 </div>
               </div>
 
@@ -106,15 +114,17 @@ export default function HomePage() {
                   </Link>
                 </div>
                 
-                {/* 관리자 링크 */}
-                <div className="pt-4 border-t border-gray-200">
-                  <Link
-                    href="/admin/auth"
-                    className="block w-full bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors text-center text-sm"
-                  >
-                    관리자 페이지
-                  </Link>
-                </div>
+                {/* 관리자 링크 - 특정 사용자만 표시 */}
+                {session.user.name === '관리자' && (
+                  <div className="pt-4 border-t border-gray-200">
+                    <Link
+                      href="/admin/auth"
+                      className="block w-full bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors text-center text-sm"
+                    >
+                      관리자 페이지
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           ) : (

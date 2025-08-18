@@ -116,7 +116,7 @@ export default function AdminPage() {
           const inTime = new Date(user.inTime!)
           const outTime = new Date(user.outTime!)
           const workHours = Math.max(0, (outTime.getTime() - inTime.getTime()) / (1000 * 60 * 60))
-          const salary = Math.floor(workHours) * 10000 + 10000 // 시간당 1만원 + 기본 1만원
+          const salary = workHours > 0 ? Math.floor(workHours) * 10000 + 10000 : 0 // 0시간이면 0원, 그 외에는 시간당 1만원 + 기본 1만원
           
           return {
             ...user,
