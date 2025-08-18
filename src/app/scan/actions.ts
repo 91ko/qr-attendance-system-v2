@@ -85,10 +85,11 @@ export async function processAttendance(
       // 모든 사용자 조회해서 확인
       const allUsers = await prisma.user.findMany()
       console.log("All users in DB:", allUsers)
+      console.log("Looking for user with name:", session.user.name)
       
       return {
         success: false,
-        message: "사용자 정보를 찾을 수 없습니다. 다시 로그인해주세요."
+        message: "사용자 정보를 찾을 수 없습니다. 먼저 사용자 등록을 완료해주세요."
       }
     }
 

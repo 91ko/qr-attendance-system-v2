@@ -470,9 +470,9 @@ export default function AdminPage() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.date}
-                    </td>
+                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                               {user.date}
+                             </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.inTime ? formatKSTTime(new Date(user.inTime)) : '-'}
                     </td>
