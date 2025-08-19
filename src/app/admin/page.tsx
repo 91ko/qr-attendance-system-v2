@@ -240,6 +240,36 @@ export default function AdminPage() {
     }
   }
 
+  const handleDeleteUser = async (userName: string) => {
+    if (!confirm(`정말로 사용자 "${userName}"와 모든 출퇴근 기록을 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다!`)) {
+      return
+    }
+
+    try {
+      const response = await fetch('/api/admin/delete-user', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userName: userName
+        }),
+      })
+
+      const result = await response.json()
+      
+      if (result.success) {
+        alert(`사용자 "${userName}"가 삭제되었습니다.`)
+        fetchAttendances()
+      } else {
+        alert('사용자 삭제 실패: ' + result.message)
+      }
+    } catch (error) {
+      console.error('사용자 삭제 오류:', error)
+      alert('사용자 삭제 중 오류가 발생했습니다.')
+    }
+  }
+
   const handleDelete = async (user: UserAttendance) => {
     if (!confirm(`정말로 ${user.name}의 ${user.date} 기록을 삭제하시겠습니까?`)) {
       return
@@ -504,6 +534,9 @@ export default function AdminPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     관리
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    사용자 삭제
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -569,6 +602,14 @@ export default function AdminPage() {
                           삭제
                         </button>
                       </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <button
+                        onClick={() => handleDeleteUser(user.name)}
+                        className="text-red-600 hover:text-red-900 font-medium bg-red-50 px-2 py-1 rounded border border-red-200"
+                      >
+                        사용자 삭제
+                      </button>
                     </td>
                   </tr>
                 ))}
