@@ -72,12 +72,26 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('사용자 등록 오류:', error)
+    console.error('오류 타입:', typeof error)
+    console.error('오류 스택:', error instanceof Error ? error.stack : 'No stack trace')
     
     // 데이터베이스 연결 오류인지 확인
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    if (errorMessage.includes('Can\'t reach database server')) {
+    console.error('오류 메시지:', errorMessage)
+    
+    if (errorMessage.includes('Can\'t reach database server') || 
+        errorMessage.includes('Connection') ||
+        errorMessage.includes('timeout') ||
+        errorMessage.includes('ECONNREFUSED')) {
       return NextResponse.json(
         { success: false, message: '데이터베이스 연결에 문제가 있습니다. 잠시 후 다시 시도해주세요.' },
+        { status: 503 }
+      )
+    }
+    
+    if (errorMessage.includes('PrismaClient')) {
+      return NextResponse.json(
+        { success: false, message: '데이터베이스 클라이언트 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' },
         { status: 503 }
       )
     }
@@ -87,6 +101,11 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   } finally {
-    await prisma.$disconnect()
+    try {
+      await prisma.$disconnect()
+      console.log('데이터베이스 연결 해제 완료')
+    } catch (disconnectError) {
+      console.error('데이터베이스 연결 해제 오류:', disconnectError)
+    }
   }
 }
