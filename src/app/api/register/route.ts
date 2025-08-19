@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('새 사용자 생성 중...')
+    console.log('생성할 데이터:', { name, contact, image })
     
     // 새 사용자 생성
     const user = await prisma.user.create({
@@ -52,6 +53,7 @@ export async function POST(request: NextRequest) {
     })
 
     console.log('사용자 생성 성공:', user)
+    console.log('저장된 연락처:', (user as any).contact)
 
     return NextResponse.json({
       success: true,

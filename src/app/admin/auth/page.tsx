@@ -15,16 +15,30 @@ export default function AdminAuthPage() {
     setIsLoading(true)
     setError('')
 
-    // 비밀번호 확인 (admin)
-    if (password === 'admin') {
-      // 세션 스토리지에 관리자 인증 상태 저장
-      sessionStorage.setItem('adminAuthenticated', 'true')
-      router.push('/admin')
-    } else {
-      setError('비밀번호가 올바르지 않습니다.')
+    try {
+      // 서버에서 비밀번호 확인
+      const response = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      })
+
+      if (response.ok) {
+        // 세션 스토리지에 관리자 인증 상태 저장
+        sessionStorage.setItem('adminAuthenticated', 'true')
+        router.push('/admin')
+      } else {
+        const data = await response.json()
+        setError(data.message || '비밀번호가 올바르지 않습니다.')
+      }
+    } catch (error) {
+      console.error('관리자 인증 오류:', error)
+      setError('인증 중 오류가 발생했습니다.')
+    } finally {
+      setIsLoading(false)
     }
-    
-    setIsLoading(false)
   }
 
   return (

@@ -43,13 +43,20 @@ export async function GET(request: Request) {
             name: true,
             image: true,
             contact: true
-          }
+          } as any
         }
       },
       orderBy: {
         at: 'desc'
       }
     })
+
+    console.log('조회된 출퇴근 데이터:', (attendances as any).map((a: any) => ({
+      userName: a.user.name,
+      userContact: a.user.contact,
+      type: a.type,
+      at: a.at
+    })))
 
     return NextResponse.json({
       success: true,

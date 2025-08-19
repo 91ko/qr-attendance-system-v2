@@ -289,6 +289,53 @@ export default function AdminPage() {
     }
   }
 
+  const handleExportExcel = async () => {
+    try {
+      const response = await fetch('/api/admin/export', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          startDate,
+          endDate
+        }),
+      })
+
+      if (response.ok) {
+        // 파일 다운로드
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        
+        // 파일명 추출
+        const contentDisposition = response.headers.get('Content-Disposition')
+        let fileName = '출퇴근기록.xlsx'
+        if (contentDisposition) {
+          const fileNameMatch = contentDisposition.match(/filename="(.+)"/)
+          if (fileNameMatch) {
+            fileName = fileNameMatch[1]
+          }
+        }
+        
+        a.download = fileName
+        document.body.appendChild(a)
+        a.click()
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(a)
+        
+        alert('엑셀 파일이 다운로드되었습니다.')
+      } else {
+        const error = await response.json()
+        alert('엑셀 내보내기 실패: ' + (error.message || '알 수 없는 오류'))
+      }
+    } catch (error) {
+      console.error('엑셀 내보내기 오류:', error)
+      alert('엑셀 내보내기 중 오류가 발생했습니다.')
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -350,7 +397,7 @@ export default function AdminPage() {
             </div>
 
             {/* 날짜 필터 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   시작일
@@ -388,6 +435,17 @@ export default function AdminPage() {
                   className="w-full px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
                 >
                   날짜 초기화
+                </button>
+              </div>
+              <div className="flex items-end">
+                <button
+                  onClick={handleExportExcel}
+                  className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span>엑셀 내보내기</span>
                 </button>
               </div>
             </div>
