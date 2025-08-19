@@ -64,8 +64,18 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('사용자 등록 오류:', error)
+    
+    // 데이터베이스 연결 오류인지 확인
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    if (errorMessage.includes('Can\'t reach database server')) {
+      return NextResponse.json(
+        { success: false, message: '데이터베이스 연결에 문제가 있습니다. 잠시 후 다시 시도해주세요.' },
+        { status: 503 }
+      )
+    }
+    
     return NextResponse.json(
-      { success: false, message: `서버 오류가 발생했습니다: ${error instanceof Error ? error.message : 'Unknown error'}` },
+      { success: false, message: `서버 오류가 발생했습니다: ${errorMessage}` },
       { status: 500 }
     )
   } finally {
