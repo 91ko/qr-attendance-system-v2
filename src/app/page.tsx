@@ -67,19 +67,28 @@ export default function HomePage() {
       return
     }
 
+    console.log('=== 연락처 등록 시작 ===')
+    console.log('사용자명:', session?.user?.name)
+    console.log('입력된 연락처:', contact.trim())
+    console.log('이미지:', session?.user?.image)
+
     setIsSubmitting(true)
     try {
+      const requestBody = {
+        name: session?.user?.name,
+        email: null,
+        contact: contact.trim(),
+        image: session?.user?.image,
+      }
+      
+      console.log('전송할 데이터:', requestBody)
+      
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name: session?.user?.name,
-          email: null,
-          contact: contact.trim(),
-          image: session?.user?.image,
-        }),
+        body: JSON.stringify(requestBody),
       })
 
       if (response.ok) {

@@ -3,10 +3,12 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('등록 API 호출됨')
+    console.log('=== 등록 API 호출됨 ===')
     
     const body = await request.json()
     console.log('요청 데이터:', body)
+    console.log('연락처 값:', body.contact)
+    console.log('연락처 타입:', typeof body.contact)
     
     const { name, contact, image } = body
 
