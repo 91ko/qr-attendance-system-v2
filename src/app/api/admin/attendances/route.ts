@@ -60,9 +60,9 @@ export async function GET(request: Request) {
     })))
     
     // 연락처가 없는 사용자들 확인
-    const usersWithoutContact = (attendances as any).filter((a: any) => !a.user.contact)
+    const usersWithoutContact = (attendances as any).filter((a: any) => !a.user.contact) // eslint-disable-line @typescript-eslint/no-explicit-any
     if (usersWithoutContact.length > 0) {
-      console.log('연락처가 없는 사용자들:', usersWithoutContact.map((a: any) => a.user.name))
+      console.log('연락처가 없는 사용자들:', usersWithoutContact.map((a: any) => a.user.name)) // eslint-disable-line @typescript-eslint/no-explicit-any
     }
 
     return NextResponse.json({
