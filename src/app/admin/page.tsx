@@ -130,11 +130,14 @@ export default function AdminPage() {
           const inTime = new Date(user.inTime!)
           const outTime = new Date(user.outTime!)
           const workHours = Math.max(0, (outTime.getTime() - inTime.getTime()) / (1000 * 60 * 60))
-          const salary = workHours > 0 ? Math.floor(workHours) * 10000 + 10000 : 0 // 0시간이면 0원, 그 외에는 시간당 1만원 + 기본 1만원
+          const flooredWorkHours = Math.floor(workHours)
+          const salary = flooredWorkHours > 0 ? flooredWorkHours * 10000 + 10000 : 0 // 0시간이면 0원, 그 외에는 시간당 1만원 + 기본 1만원
+          
+          console.log(`급여 계산 - 사용자: ${user.name}, 출근: ${user.inTime}, 퇴근: ${user.outTime}, 실제시간: ${workHours.toFixed(4)}시간, 내림시간: ${flooredWorkHours}시간, 급여: ${salary}원`)
           
           return {
             ...user,
-            workHours: Math.floor(workHours),
+            workHours: flooredWorkHours,
             salary
           }
         } else if (user.inTime) {
@@ -418,7 +421,7 @@ export default function AdminPage() {
                 placeholder="이름으로 검색..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-900"
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                 <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
