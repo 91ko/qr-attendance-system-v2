@@ -73,7 +73,7 @@ export default function EditModal({ isOpen, onClose, user, onSave }: EditModalPr
               type="datetime-local"
               value={inTime}
               onChange={(e) => setInTime(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
             />
           </div>
 
@@ -85,7 +85,7 @@ export default function EditModal({ isOpen, onClose, user, onSave }: EditModalPr
                      type="datetime-local"
                      value={outTime}
                      onChange={(e) => setOutTime(e.target.value)}
-                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                    />
                  </div>
         </div>

@@ -230,11 +230,13 @@ export default function HomePage() {
                   연락처 *
                 </label>
                 <input
-                  type="tel"
+                  type="text"
                   id="contact"
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
                   placeholder="010-1234-5678"
+                  pattern="[0-9-]*"
+                  inputMode="tel"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   disabled={isSubmitting}
                 />
