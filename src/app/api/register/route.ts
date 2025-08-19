@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     })
 
     console.log('사용자 생성 성공:', user)
-    console.log('저장된 연락처:', (user as any).contact)
+    console.log('저장된 연락처:', (user as any).contact) // eslint-disable-line @typescript-eslint/no-explicit-any
 
     return NextResponse.json({
       success: true,

@@ -43,7 +43,7 @@ export async function GET(request: Request) {
             name: true,
             image: true,
             contact: true
-          } as any
+          } as any // eslint-disable-line @typescript-eslint/no-explicit-any
         }
       },
       orderBy: {
@@ -51,7 +51,7 @@ export async function GET(request: Request) {
       }
     })
 
-    console.log('조회된 출퇴근 데이터:', (attendances as any).map((a: any) => ({
+    console.log('조회된 출퇴근 데이터:', (attendances as any).map((a: any) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
       userName: a.user.name,
       userContact: a.user.contact,
       type: a.type,
