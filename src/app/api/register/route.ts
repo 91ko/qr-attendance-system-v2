@@ -4,11 +4,15 @@ import { prisma } from '@/lib/prisma'
 export async function POST(request: NextRequest) {
   try {
     console.log('=== 등록 API 호출됨 ===')
+    console.log('요청 URL:', request.url)
+    console.log('요청 메서드:', request.method)
     
     const body = await request.json()
     console.log('요청 데이터:', body)
     console.log('연락처 값:', body.contact)
     console.log('연락처 타입:', typeof body.contact)
+    
+    console.log('DATABASE_URL 환경변수 확인:', process.env.DATABASE_URL ? '설정됨' : '설정되지 않음')
     
     const { name, contact, image } = body
 
