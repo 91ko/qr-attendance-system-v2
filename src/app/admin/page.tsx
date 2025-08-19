@@ -46,6 +46,16 @@ export default function AdminPage() {
     isOpen: false,
     user: null
   })
+
+  const [contactEditModal, setContactEditModal] = useState<{
+    isOpen: boolean
+    userName: string
+    currentContact: string
+  }>({
+    isOpen: false,
+    userName: '',
+    currentContact: ''
+  })
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set())
 
   useEffect(() => {
@@ -96,7 +106,7 @@ export default function AdminPage() {
         userMap.set(key, {
           name: attendance.user.name,
           image: attendance.user.image,
-          contact: attendance.user.contact,
+          contact: attendance.user.contact || '연락처 없음',
           date: attendanceDate
         })
       }
@@ -191,6 +201,42 @@ export default function AdminPage() {
     } catch (error) {
       console.error('수정 오류:', error)
       alert('수정 중 오류가 발생했습니다.')
+    }
+  }
+
+  const handleContactEdit = (userName: string, currentContact: string) => {
+    setContactEditModal({
+      isOpen: true,
+      userName,
+      currentContact
+    })
+  }
+
+  const handleContactEditSave = async (newContact: string) => {
+    try {
+      const response = await fetch('/api/admin/update-contact', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userName: contactEditModal.userName,
+          contact: newContact
+        }),
+      })
+
+      const result = await response.json()
+      
+      if (result.success) {
+        setContactEditModal({ isOpen: false, userName: '', currentContact: '' })
+        fetchAttendances()
+        alert('연락처가 수정되었습니다.')
+      } else {
+        alert('연락처 수정 실패: ' + result.message)
+      }
+    } catch (error) {
+      console.error('연락처 수정 오류:', error)
+      alert('연락처 수정 중 오류가 발생했습니다.')
     }
   }
 
@@ -486,7 +532,12 @@ export default function AdminPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.contact || '-'}
+                      <button
+                        onClick={() => handleContactEdit(user.name, user.contact || '')}
+                        className="text-blue-600 hover:text-blue-800 underline cursor-pointer"
+                      >
+                        {user.contact || '연락처 없음'}
+                      </button>
                     </td>
                                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
                                {user.date}
@@ -540,6 +591,50 @@ export default function AdminPage() {
         user={editModal.user}
         onSave={handleEditSave}
       />
+
+      {/* 연락처 수정 모달 */}
+      {contactEditModal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-96">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">
+              연락처 수정
+            </h3>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                사용자: {contactEditModal.userName}
+              </label>
+              <input
+                type="tel"
+                defaultValue={contactEditModal.currentContact}
+                placeholder="010-1234-5678"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                id="contactInput"
+              />
+            </div>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setContactEditModal({ isOpen: false, userName: '', currentContact: '' })}
+                className="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                취소
+              </button>
+              <button
+                onClick={() => {
+                  const input = document.getElementById('contactInput') as HTMLInputElement
+                  if (input && input.value.trim()) {
+                    handleContactEditSave(input.value.trim())
+                  } else {
+                    alert('연락처를 입력해주세요.')
+                  }
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                저장
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -54,9 +54,16 @@ export async function GET(request: Request) {
     console.log('조회된 출퇴근 데이터:', (attendances as any).map((a: any) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
       userName: a.user.name,
       userContact: a.user.contact,
+      userContactType: typeof a.user.contact,
       type: a.type,
       at: a.at
     })))
+    
+    // 연락처가 없는 사용자들 확인
+    const usersWithoutContact = (attendances as any).filter((a: any) => !a.user.contact)
+    if (usersWithoutContact.length > 0) {
+      console.log('연락처가 없는 사용자들:', usersWithoutContact.map((a: any) => a.user.name))
+    }
 
     return NextResponse.json({
       success: true,
